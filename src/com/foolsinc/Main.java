@@ -1,21 +1,19 @@
 package com.foolsinc;
 
-import com.sun.org.apache.xpath.internal.objects.XNumber;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.SortedMap;
+import java.awt.Robot;
 
 public class Main {
 
-    private static List<Sums> solutions = new ArrayList<>();
+    private static final List<Sums> solutions = new ArrayList<>();
 
-    private static Sums sumers = new Sums();
     public static void main(String[] args) {
         Scanner myObj = new Scanner(System.in);
-        int goal = 20;
-        int digits = 3;
+        int goal;
+        int digits;
         Sums excludedValues;
         goal = getAnInt(myObj,"Goal is: ");
         int start = 9;
@@ -28,22 +26,23 @@ public class Main {
             solutions.clear();
             arrayCreator(start);
             boolean exclude;
-            for (int i = 0; i < solutions.size(); i++) {
+            for (Sums solution : solutions) {
                 exclude = false;
-                if (solutions.get(i).factors.size() == digits) {
+                if (solution.factors.size() == digits) {
                     int sum = 0;
-                    for (int j = 0; j < solutions.get(i).factors.size(); j++) {
-                        sum += solutions.get(i).factors.get(j);
-                        if (excludedValues.factors.contains(solutions.get(i).factors.get(j))){
+                    for (int j = 0; j < solution.factors.size(); j++) {
+                        sum += solution.factors.get(j);
+                        if (excludedValues.factors.contains(solution.factors.get(j))) {
                             exclude = true;
                         }
                     }
                     if ((sum == goal) && !exclude) {
-                        System.out.println(solutions.get(i).factors);
+                        System.out.println(solution.factors);
                     }
                 }
             }
             System.out.println("Excluded values: " + excludedValues.factors);
+            start = 9;
             goal = getAnInt(myObj,"Goal is: ");
         }
     }
@@ -69,27 +68,9 @@ public class Main {
     public static class Sums {
         public List<Integer> factors = new ArrayList<>();
 
-        public Sums(Sums obj){
-            factors = obj.factors;
-        }
-
         public Sums() {
 
         }
-    }
-
-    public static void make(int goal, int start, int number, Sums factor){
-        if(number>1) {
-            for (int add = start; add >= number; add--) {
-
-                System.out.print(add + " ");
-                make(goal-add,add -1 , number - 1, factor);
-            }
-        } else {
-            System.out.print(start + " ");
-        }
-
-        System.out.println(" ");
     }
 
     public static void factor(int goal, int number){
@@ -110,26 +91,22 @@ public class Main {
             for (int value = start; value >= (goal - (number - 1) * number / 2); value--) {
                 sumers.factors.add(value);
                 if (number > 1) {
-                    if ((goal-value) < (value -1)) {
-                        nextStart = goal - value;
-                    } else {
-                        nextStart = value -1;
-                    }
+                    nextStart = Math.min((goal - value), (value - 1));
                     System.out.println("in the need another");
                     factor(goal - value, nextStart, number - 1, sumers);
                 } else {
                     System.out.println(" did it work "+ value);
                     System.out.println(sumers.factors);
                     solutions.add(sumers);
-                    for(int i = 0; i < solutions.size(); i++) {
-                        System.out.println("Factors: " + solutions.get(i).factors);
+                    for (Sums solution : solutions) {
+                        System.out.println("Factors: " + solution.factors);
                     }
                 }
                 sumers.factors.remove(sumers.factors.size() - 1);
             }
             System.out.println("Solutions:   !!!!");
-            for(int i = 0; i < solutions.size(); i++) {
-                System.out.println(solutions.get(i).factors);
+            for (Sums solution : solutions) {
+                System.out.println(solution.factors);
             }
         }
     }
