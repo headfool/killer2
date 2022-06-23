@@ -47,6 +47,7 @@ public class Main {
         }
     }
 
+
     private static Sums getExcludedValues(Scanner myObj) {
         Sums exclusions = new Sums();
         System.out.print("Enter values to exclude: ");
